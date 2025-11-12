@@ -42,8 +42,8 @@
             "chat",
             "preguntas"
           ],
-          "smallIconUri": "https://example.com/small-icon.png",
-          "largeIconUri": "https://example.com/large-icon.png"
+          "smallIconUri": "https://cdn.deepseek.com/platform/favicon.png",
+          "largeIconUri": "https://cdn.deepseek.com/platform/favicon.png"
         }
       },
       "testingInstructions": "Sample Testing Instructions."
