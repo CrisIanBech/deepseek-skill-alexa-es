@@ -23,21 +23,18 @@ MODEL = "deepseek-chat"
 messages = [
     {
         "role": "system",
-        "content": "Você é uma assistente muito útil. Por favor, responda de forma clara e concisa em Português do Brasil. Toda resposta deve ter, no máximo, 400 caracteres e o texto deve ser corrido.",
+        "content": "Eres un asistente muy útil. Por favor, responde de forma clara y concisa en Español de México. Toda respuesta debe tener, como máximo, 400 caracteres y el texto debe ser corrido.",
     }
 ]
 
 
 class LaunchRequestHandler(AbstractRequestHandler):
-    def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
-
+    def can_handle(self, handler_input: HandlerInput) -> bool:
         return ask_utils.is_request_type("LaunchRequest")(handler_input)
 
-    def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
+    def handle(self, handler_input: HandlerInput) -> Response:
         speak_output = (
-            "Bem vindo ao assistente 'dipi siqui'! Qual a sua pergunta?"
+            "¡Bienvenido al asistente Deepseek! ¿Cuál es tu pregunta?"
         )
 
         return (
@@ -48,18 +45,26 @@ class LaunchRequestHandler(AbstractRequestHandler):
 
 
 class GptQueryIntentHandler(AbstractRequestHandler):
-    def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
+    def can_handle(self, handler_input: HandlerInput) -> bool:
         return ask_utils.is_intent_name("GptQueryIntent")(handler_input)
 
-    def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
-        query = handler_input.request_envelope.request.intent.slots["query"].value
+    def handle(self, handler_input: HandlerInput) -> Response:
+        query_slot = handler_input.request_envelope.request.intent.slots.get("query")
+        query = query_slot.value if query_slot else None
+        
+        if not query:
+            speak_output = "No entendí tu pregunta. Por favor, repítela."
+            return (
+                handler_input.response_builder.speak(speak_output)
+                .ask(speak_output)
+                .response
+            )
+        
         response = generate_gpt_response(query)
 
         return (
             handler_input.response_builder.speak(response)
-            .ask("Você pode fazer uma nova pergunta ou falar: sair.")
+            .ask("Puedes hacer una nueva pregunta o decir: salir.")
             .response
         )
 
@@ -76,17 +81,15 @@ def generate_gpt_response(query):
         messages.append({"role": "assistant", "content": reply})
         return reply
     except Exception as e:
-        return f"Erro ao gerar resposta: {str(e)}"
+        return f"Error al generar respuesta: {str(e)}"
 
 
 class HelpIntentHandler(AbstractRequestHandler):
-    def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
+    def can_handle(self, handler_input: HandlerInput) -> bool:
         return ask_utils.is_intent_name("AMAZON.HelpIntent")(handler_input)
 
-    def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
-        speak_output = "Como posso te ajudar?"
+    def handle(self, handler_input: HandlerInput) -> Response:
+        speak_output = "¿Cómo puedo ayudarte? Puedes hacerme cualquier pregunta y te responderé usando Deepseek."
 
         return (
             handler_input.response_builder.speak(speak_output)
@@ -96,26 +99,22 @@ class HelpIntentHandler(AbstractRequestHandler):
 
 
 class CancelOrStopIntentHandler(AbstractRequestHandler):
-    def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
+    def can_handle(self, handler_input: HandlerInput) -> bool:
         return ask_utils.is_intent_name("AMAZON.CancelIntent")(
             handler_input
         ) or ask_utils.is_intent_name("AMAZON.StopIntent")(handler_input)
 
-    def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
-        speak_output = "Até logo!"
+    def handle(self, handler_input: HandlerInput) -> Response:
+        speak_output = "¡Hasta luego!"
 
         return handler_input.response_builder.speak(speak_output).response
 
 
 class SessionEndedRequestHandler(AbstractRequestHandler):
-    def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
+    def can_handle(self, handler_input: HandlerInput) -> bool:
         return ask_utils.is_request_type("SessionEndedRequest")(handler_input)
 
-    def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
+    def handle(self, handler_input: HandlerInput) -> Response:
 
         # Any cleanup logic goes here.
 
@@ -123,15 +122,13 @@ class SessionEndedRequestHandler(AbstractRequestHandler):
 
 
 class CatchAllExceptionHandler(AbstractExceptionHandler):
-    def can_handle(self, handler_input, exception):
-        # type: (HandlerInput, Exception) -> bool
+    def can_handle(self, handler_input: HandlerInput, exception: Exception) -> bool:
         return True
 
-    def handle(self, handler_input, exception):
-        # type: (HandlerInput, Exception) -> Response
+    def handle(self, handler_input: HandlerInput, exception: Exception) -> Response:
         logger.error(exception, exc_info=True)
 
-        speak_output = "Desculpe, não consegui processar sua solicitação."
+        speak_output = "Lo siento, no pude procesar tu solicitud. Por favor, intenta de nuevo."
 
         return (
             handler_input.response_builder.speak(speak_output)

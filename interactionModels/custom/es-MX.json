@@ -22,17 +22,22 @@
           "slots": [
             {
               "name": "query",
-              "type": "AMAZON.Person"
+              "type": "AMAZON.SearchQuery"
             }
           ],
           "name": "GptQueryIntent",
           "samples": [
-            "{query}"
+            "{query}",
+            "pregunta {query}",
+            "dime {query}",
+            "cuéntame {query}",
+            "explícame {query}"
           ]
         }
       ],
       "types": [],
-      "invocationName": "chat avançado"
+      "invocationName": "deepseek"
     }
   }
 }
+

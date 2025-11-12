@@ -31,8 +31,19 @@
       "distributionCountries": [],
       "isAvailableWorldwide": true,
       "locales": {
-        "pt-BR": {
-          "name": "deepseek"
+        "es-MX": {
+          "name": "deepseek",
+          "summary": "Asistente de inteligencia artificial con Deepseek",
+          "description": "Haz preguntas y obtén respuestas inteligentes usando Deepseek. Simplemente di 'Alexa, abre deepseek' y luego haz tu pregunta.",
+          "keywords": [
+            "deepseek",
+            "inteligencia artificial",
+            "asistente",
+            "chat",
+            "preguntas"
+          ],
+          "smallIconUri": "https://example.com/small-icon.png",
+          "largeIconUri": "https://example.com/large-icon.png"
         }
       },
       "testingInstructions": "Sample Testing Instructions."
